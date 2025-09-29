@@ -1,0 +1,14 @@
+{
+  "name": "Global Recall",
+  "description": "Critical component recall impacts warranty costs and CSI.",
+  "deltas": {
+    "warrantyModel": { "baseRate": 1200 },
+    "allocationRule": { "dealerCSIWeight": 1.3 }
+  },
+  "events": { "port_strike": 0.2 },
+  "objectives": {
+    "warrantyPerUnit": 800,
+    "csi": 80,
+    "cash": 300000000
+  }
+}

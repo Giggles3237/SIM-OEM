@@ -1,0 +1,244 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = env("DATABASE_PROVIDER")
+  url      = env("DATABASE_URL")
+}
+
+model Market {
+  id             Int      @id @default(autoincrement())
+  name           String
+  region         String
+  currency       String
+  co2Target      Float
+  zevCreditPrice Float
+  fuelPriceIdx   Float
+  interestRateIdx Float
+  gdpIdx         Float
+  dealers        Dealer[]
+  campaigns      Campaign[]
+  pricing        Pricing[]
+}
+
+model Segment {
+  id   Int    @id @default(autoincrement())
+  code String @unique
+  name String
+  programs Program[]
+}
+
+model Platform {
+  id         Int     @id @default(autoincrement())
+  name       String
+  type       String
+  startYear  Int
+  endYear    Int?
+  rAndDCost  Float
+  programs   Program[]
+}
+
+model Program {
+  id         Int      @id @default(autoincrement())
+  name       String
+  platform   Platform @relation(fields: [platformId], references: [id])
+  platformId Int
+  segment    Segment  @relation(fields: [segmentId], references: [id])
+  segmentId  Int
+  startMonth Int
+  status     String
+  trims      Trim[]
+}
+
+model Trim {
+  id             Int       @id @default(autoincrement())
+  program        Program   @relation(fields: [programId], references: [id])
+  programId      Int
+  powertrain     String
+  msrp           Float
+  featureVector  Json
+  buildCost      Json
+  batteryKWh     Float?
+  rangeMiles     Float?
+  adasLevel      Int
+  variableMargins Json
+  inventories    Inventory[]
+  pricing        Pricing[]
+}
+
+model Plant {
+  id                 Int     @id @default(autoincrement())
+  name               String
+  region             String
+  capacityJobsPerHour Int
+  oee                Float
+  energyMix          String
+  bottlenecks        Json
+  changeoverMins     Int
+  productionPlans    ProductionPlan[]
+}
+
+model Supplier {
+  id            Int      @id @default(autoincrement())
+  name          String
+  partCategory  String
+  leadTimeMonths Int
+  ppm           Float
+  minOrderQty   Int
+  priceCurve    Json
+  riskScore     Float
+  parts         Part[]
+  contracts     Contract[]
+}
+
+model Part {
+  id           Int      @id @default(autoincrement())
+  supplier     Supplier @relation(fields: [supplierId], references: [id])
+  supplierId   Int
+  code         String
+  name         String
+  unitCostBase Float
+  category     String
+  contracts    Contract[]
+}
+
+model Dealer {
+  id             Int       @id @default(autoincrement())
+  code           String
+  market         Market    @relation(fields: [marketId], references: [id])
+  marketId       Int
+  throughputIndex Float
+  csi            Float
+  evReadiness    Float
+  facilityScore  Float
+  inventory      Inventory[]
+}
+
+model Inventory {
+  id       Int   @id @default(autoincrement())
+  trim     Trim  @relation(fields: [trimId], references: [id])
+  trimId   Int
+  dealer   Dealer @relation(fields: [dealerId], references: [id])
+  dealerId Int
+  ageDays  Int
+  qty      Int
+}
+
+model Campaign {
+  id                Int    @id @default(autoincrement())
+  market            Market @relation(fields: [marketId], references: [id])
+  marketId          Int
+  type              String
+  spend             Float
+  startMonth        Int
+  endMonth          Int
+  awarenessLift     Float
+  considerationLift Float
+}
+
+model Contract {
+  id         Int      @id @default(autoincrement())
+  supplier   Supplier @relation(fields: [supplierId], references: [id])
+  supplierId Int
+  part       Part?    @relation(fields: [partId], references: [id])
+  partId     Int?
+  terms      Json
+  startMonth Int
+  endMonth   Int
+  dualSourceRank Int
+}
+
+model TechNode {
+  id             Int    @id @default(autoincrement())
+  code           String @unique
+  name           String
+  cost           Float
+  timeMonths     Int
+  risk           Float
+  featureImpact  Json
+  regScoreImpact Float
+  prereqs        Json
+  researches     Research[]
+}
+
+model Research {
+  id         Int      @id @default(autoincrement())
+  techNode   TechNode @relation(fields: [techNodeId], references: [id])
+  techNodeId Int
+  startMonth Int
+  progress   Float
+  status     String
+}
+
+model EventCard {
+  id          Int    @id @default(autoincrement())
+  code        String @unique
+  name        String
+  description String
+  effects     Json
+  weight      Float
+}
+
+model SimConfig {
+  id    Int   @id @default(autoincrement())
+  name  String
+  rules Json
+}
+
+model SimState {
+  id                 Int          @id @default(autoincrement())
+  currentMonth       Int
+  cash               Float
+  debt               Float
+  boardExpectations  Json
+  snapshots          SimSnapshot[]
+}
+
+model SimSnapshot {
+  id         Int      @id @default(autoincrement())
+  simState   SimState @relation(fields: [simStateId], references: [id])
+  simStateId Int
+  month      Int
+  kpis       Json
+  deltas     Json
+}
+
+model Pricing {
+  id             Int   @id @default(autoincrement())
+  trim           Trim  @relation(fields: [trimId], references: [id])
+  trimId         Int
+  market         Market @relation(fields: [marketId], references: [id])
+  marketId       Int
+  msrp           Float
+  incentivePerUnit Float
+  aprSubvent     Float
+  leaseMF        Float
+  residualPct    Float
+}
+
+model WarrantyModel {
+  id                Int   @id @default(autoincrement())
+  baseRate          Float
+  complexityFactor  Float
+  supplierPpmFactor Float
+  oeeFactor         Float
+}
+
+model UserSave {
+  id        Int      @id @default(autoincrement())
+  userId    String?
+  label     String
+  createdAt DateTime @default(now())
+  payload   Json
+}
+
+model ProductionPlan {
+  id       Int   @id @default(autoincrement())
+  plant    Plant @relation(fields: [plantId], references: [id])
+  plantId  Int
+  trim     Trim  @relation(fields: [trimId], references: [id])
+  trimId   Int
+  volume   Int
+  month    Int
+}
