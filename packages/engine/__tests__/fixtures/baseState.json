@@ -1,0 +1,23 @@
+{
+  "id": "fixture",
+  "currentMonth": 0,
+  "cash": 350000000,
+  "debt": 125000000,
+  "boardExpectations": {},
+  "trims": [],
+  "inventories": [],
+  "macro": {},
+  "brandAffinity": {},
+  "plants": [],
+  "warrantyModel": {
+    "baseRate": 600,
+    "complexityFactor": 1.05,
+    "supplierPpmFactor": 1,
+    "oeeFactor": 1
+  },
+  "allocationRule": {
+    "marketPriority": {},
+    "dealerCSIWeight": 1,
+    "fairnessMin": 5
+  }
+}

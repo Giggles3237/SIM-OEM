@@ -1,0 +1,14 @@
+{
+  "name": "EV Pivot Mid-Cycle",
+  "description": "Board mandates a rapid shift to electrification mid-cycle.",
+  "deltas": {
+    "simConfig": { "rules": { "elasticityBySegment": { "EV-C": 1.4 } } },
+    "markets": { "market-2": { "co2Target": 70 } }
+  },
+  "events": { "ncap_downgrade": 0.1 },
+  "objectives": {
+    "bevMix": 0.35,
+    "co2": 0,
+    "ebitdaPct": 0.1
+  }
+}

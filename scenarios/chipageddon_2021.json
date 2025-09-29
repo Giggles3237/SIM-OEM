@@ -1,0 +1,14 @@
+{
+  "name": "Chipageddon 2021",
+  "description": "Global semiconductor shortage reduces plant throughput and raises supplier risk.",
+  "deltas": {
+    "plants": { "plant-1": { "oee": 0.75 } },
+    "suppliers": { "SkyChip": { "leadTimeMonths": 12, "riskScore": 0.7 } }
+  },
+  "events": { "chip_shortage": 0.8 },
+  "objectives": {
+    "ebitdaPct": 0.08,
+    "bevMix": 0.25,
+    "cash": 400000000
+  }
+}

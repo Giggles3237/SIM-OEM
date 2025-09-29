@@ -1,0 +1,40 @@
+{
+  "name": "sim-oem",
+  "version": "1.0.0",
+  "private": true,
+  "packageManager": "pnpm@8.15.4",
+  "scripts": {
+    "dev": "concurrently --kill-others-on-fail \"pnpm --filter api dev\" \"pnpm --filter web dev\"",
+    "test": "pnpm lint && pnpm test:engine && pnpm --filter api test && pnpm --filter web test && pnpm test:e2e",
+    "test:engine": "pnpm --filter engine test",
+    "test:e2e": "playwright test",
+    "lint": "pnpm eslint .",
+    "db:migrate": "pnpm --filter api prisma migrate deploy",
+    "db:seed": "pnpm --filter api prisma db seed"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "18.6.1",
+    "@commitlint/config-conventional": "18.6.2",
+    "@types/node": "20.11.19",
+    "@typescript-eslint/eslint-plugin": "6.21.0",
+    "@typescript-eslint/parser": "6.21.0",
+    "concurrently": "8.2.2",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "husky": "9.0.11",
+    "lint-staged": "15.2.2",
+    "playwright": "1.41.2",
+    "prettier": "3.2.5",
+    "typescript": "5.3.3"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,md}": "prettier --write"
+  },
+  "commitlint": {
+    "extends": ["@commitlint/config-conventional"]
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}
